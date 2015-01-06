@@ -20,9 +20,29 @@
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     -webkit-touch-callout: none;
     -webkit-user-drag: none;
-    outline: none;
     margin: 0;
     padding: 0;
+}
+
+input[type=text]:focus,
+input[type=password]:focus,
+input[type=email]:focus,
+input[type=url]:focus,
+input[type=date]:focus,
+input[type=month]:focus,
+input[type=time]:focus,
+input[type=datetime]:focus,
+input[type=datetime-local]:focus,
+input[type=week]:focus,
+input[type=number]:focus,
+input[type=search]:focus,
+input[type=tel]:focus,
+input[type=color]:focus,
+select:focus,
+textarea:focus {
+  outline: 0;
+  outline: thin dotted \9;
+  border-color: #129FEA
 }
 
 html, body {
@@ -179,6 +199,10 @@ code {
         </td>
     </tr>
     <tr>
+        <td><span>HMAC</span></td>
+        <td><input id="hmac" type="text" placeholder="1password"></td>
+    </tr>
+    <tr>
         <td><span>Length<br/><code id="length-show">14</code></span></td>
         <td>
             <input id="length" type="range" max="40" min="1" step="1" value="14" oninput="range()" onchange="range()">
@@ -207,6 +231,8 @@ code {
     }
     var type = $('type');
     var length = $('length');
+    var hmac = $('hmac');
+    var content = $('content');
     function getLen(){
         return Math.max(parseInt(length.value) || 14, 4);
     }
@@ -214,14 +240,24 @@ code {
         var t = type.value;
         if(typeof Hashes[t] === 'function'){
             var encrpty = new Hashes[t];
-            var content = ($('content').value || '').trim().toLowerCase();
-            if(content){
+            var str = (content.value || '').trim().toLowerCase();
+            if(str){
                 var value = getLen();
-                $('result').innerHTML = encrpty.b64(content).replace(/\W/g, '').substring(0, value);
-                localStorage.setItem('_1pwd_type_', t);
-                localStorage.setItem('_1pwd_leng_', value);
+                var key = (hmac.value || '').trim();
+                if(key){
+                    var pwd = encrpty.b64_hmac(key, str);
+                    $('result').innerHTML = pwd.replace(/\W/g, '').substring(0, value);
+                    localStorage.setItem('_1pwd_type_', t);
+                    localStorage.setItem('_1pwd_leng_', value);
+                } else {
+                    alert('missing 1password');
+                    hmac.focus();
+                    hmac.select();
+                }
             } else {
                 alert('missing content');
+                content.focus();
+                content.select();
             }
         } else {
             alert('Invalid type');
