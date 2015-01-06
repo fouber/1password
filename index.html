@@ -209,10 +209,10 @@ code {
         var type = $('type').value;
         if(typeof Hashes[type] === 'function'){
             var encrpty = new Hashes[type];
-            var content = ($('content').value || '').trim();
+            var content = ($('content').value || '').trim().toLowerCase();
             if(content){
                 var value = getLen();
-                $('result').innerHTML = encrpty.b64(content.toLowerCase()).replace(/\W/g, '').substring(0, value);
+                $('result').innerHTML = encrpty.b64(content).replace(/\W/g, '').substring(0, value);
             } else {
                 alert('missing content');
             }
