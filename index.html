@@ -212,7 +212,7 @@ code {
             var content = ($('content').value || '').trim();
             if(content){
                 var value = getLen();
-                $('result').innerHTML = encrpty.b64(content).replace(/\W/g, '').substring(0, value);
+                $('result').innerHTML = encrpty.b64(content.toLowerCase()).replace(/\W/g, '').substring(0, value);
             } else {
                 alert('missing content');
             }
