@@ -103,7 +103,7 @@ input[type="text"], select {
     vertical-align: baseline;
     text-transform: none;
     letter-spacing: 0.01em;
-    padding: .6em .6em;
+    padding: .5em .6em;
     display: inline-block;
     box-shadow: inset 0 1px 3px #ddd;
     border-radius: 4px;
@@ -131,13 +131,18 @@ table {
 td {
     padding: 10px 0;
     font-size: 1.4rem;
+    line-height: 1.4em;
 }
 tr td:first-child {
     text-align: right;
     padding-right: 20px;
     padding-left: 20px;
 }
-
+code {
+    background: #ccc;
+    padding: 1px 2px;
+    border-radius: 3px;
+}
 #result {
     text-align: center!important;
     display: block;
@@ -170,9 +175,9 @@ tr td:first-child {
         </td>
     </tr>
     <tr>
-        <td><span>Length</span></td>
+        <td><span>Length<br/><code id="length-show">14</code></span></td>
         <td>
-            <input id="length" type="range" max="40" min="1" step="1" value="14">
+            <input id="length" type="range" max="40" min="1" step="1" value="14" oninput="range()" onchange="range()">
         </td>
     </tr>
     <tr>
@@ -196,13 +201,17 @@ tr td:first-child {
     function $(id){
         return document.getElementById(id);
     }
+    var length = $('length');
+    function getLen(){
+        return Math.max(parseInt(length.value) || 14, 4);
+    }
     window.gen = function(){
         var type = $('type').value;
         if(typeof Hashes[type] === 'function'){
             var encrpty = new Hashes[type];
             var content = ($('content').value || '').trim();
             if(content){
-                var value = Math.max(parseInt($('length').value) || 14, 4);
+                var value = getLen();
                 $('result').innerHTML = encrpty.b64(content).replace(/\W/g, '').substring(0, value);
             } else {
                 alert('missing content');
@@ -211,8 +220,10 @@ tr td:first-child {
             alert('Invalid type');
         }
     };
+    window.range = function(){
+        $('length-show').innerHTML = getLen();
+    }
 })();
-console.log(new Hashes.SHA1().b64('fouber@jd.com'));
 </script>
 </body>
 </html>
