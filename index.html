@@ -165,7 +165,7 @@ code {
         <td>
             <select id="type">
                 <option value="MD5">MD5</option>
-                <option selected="selected" value="SHA1">SHA1</option>
+                <option value="SHA1">SHA1</option>
                 <option value="SHA256">SHA256</option>
                 <option value="SHA512">SHA512</option>
                 <option value="RMD160">RMD160</option>
@@ -205,18 +205,21 @@ code {
     function $(id){
         return document.getElementById(id);
     }
+    var type = $('type');
     var length = $('length');
     function getLen(){
         return Math.max(parseInt(length.value) || 14, 4);
     }
     window.gen = function(){
-        var type = $('type').value;
-        if(typeof Hashes[type] === 'function'){
-            var encrpty = new Hashes[type];
+        var t = type.value;
+        if(typeof Hashes[t] === 'function'){
+            var encrpty = new Hashes[t];
             var content = ($('content').value || '').trim().toLowerCase();
             if(content){
                 var value = getLen();
                 $('result').innerHTML = encrpty.b64(content).replace(/\W/g, '').substring(0, value);
+                localStorage.setItem('_1pwd_type_', t);
+                localStorage.setItem('_1pwd_leng_', value);
             } else {
                 alert('missing content');
             }
@@ -227,6 +230,22 @@ code {
     window.range = function(){
         $('length-show').innerHTML = getLen();
     }
+    try {
+        var lastType = localStorage.getItem('_1pwd_type_');
+        if(lastType){
+            var options = document.getElementsByTagName('option');
+            for(var i = 0, len = options.length; i < len; i++){
+                var opt = options[i];
+                if(opt.value === lastType){
+                    opt.setAttribute('selected', 'selected');
+                }
+            }
+        }
+        var lastLength = localStorage.getItem('_1pwd_leng_');
+        if(lastLength){
+            length.value = lastLength;
+        }
+    } catch(e) {}
 })();
 </script>
 </body>
