@@ -1,2 +1,3 @@
-1password
-=========
+# password generator
+
+http://fouber.github.io/1password/
