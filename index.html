@@ -244,6 +244,7 @@ code {
         var lastLength = localStorage.getItem('_1pwd_leng_');
         if(lastLength){
             length.value = lastLength;
+            range();
         }
     } catch(e) {}
 })();
